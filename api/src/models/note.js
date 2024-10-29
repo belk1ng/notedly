@@ -1,4 +1,4 @@
-import {Schema, model} from "mongoose";
+import {Schema, Types, model} from "mongoose";
 
 const NoteSchema = new Schema({
         content: {
@@ -6,7 +6,8 @@ const NoteSchema = new Schema({
             required: true,
         },
         author: {
-            type: String,
+            type: Types.ObjectId,
+            ref: 'User',
             required: true,
         }
     }, {
