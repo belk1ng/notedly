@@ -71,7 +71,7 @@ export const Mutation = {
         return models.note.create({
             content: content,
             author: new Types.ObjectId(
-                user._id
+                user.id
             )
         })
     },
@@ -103,7 +103,7 @@ export const Mutation = {
     },
     async deleteNote(_, {noteId}, {models, user}) {
         if (!user) {
-            throw new GraphQLError('You must be signed in to update the note', {
+            throw new GraphQLError('You must be signed in to delete the note', {
                 extensions: {
                     code: ErrorVariant.AuthenticationError
                 }
@@ -112,7 +112,7 @@ export const Mutation = {
 
         const note = await models.note.findById(noteId);
         if (note && note.author.toString() !== user.id) {
-            throw new GraphQLError('You dont have permission to delete a note', {
+            throw new GraphQLError('You dont have permission to delete the note', {
                 extensions: {
                     code: ErrorVariant.ForbiddenError
                 }
@@ -120,11 +120,56 @@ export const Mutation = {
         }
 
         try {
-            note.remove()
+            await models.note.findByIdAndDelete(note.id)
             return true
         } catch (error) {
             console.log(error)
             return false;
         }
     },
+    async toggleFavorite(_, {noteId}, {models, user}) {
+        if (!user) {
+            throw new GraphQLError('You must be signed in to toggle favorite notes', {
+                extensions: {
+                    code: ErrorVariant.AuthenticationError
+                }
+            })
+        }
+
+        const note = await models.note.findById(noteId);
+        const isFavorite = note.favoriteBy.indexOf(user.id) !== -1
+
+        try {
+            if (isFavorite) {
+                return models.note.findByIdAndUpdate(noteId, {
+                    $pull: {
+                        favoriteBy: new Types.ObjectId(user.id)
+                    },
+                    $inc: {
+                        favoriteCount: -1
+                    }
+                }, {
+                    new: true
+                })
+            } else {
+                return models.note.findByIdAndUpdate(noteId, {
+                    $push: {
+                        favoriteBy: new Types.ObjectId(user.id)
+                    },
+                    $inc: {
+                        favoriteCount: 1
+                    }
+                }, {
+                    new: true
+                })
+            }
+        } catch (error) {
+            console.log(error);
+            throw new GraphQLError('Unexpected error occurred', {
+                extensions: {
+                    code: ErrorVariant.UnexpectedError
+                }
+            })
+        }
+    }
 }

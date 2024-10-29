@@ -4,8 +4,8 @@ import {connectToDataBase} from "./mongo.js";
 import {resolvers} from "./resolvers/index.js";
 import {typeDefs} from "./schema.js"
 import {models} from "./models/index.js"
-import 'dotenv/config'
 import {getUser} from "./utils/getUser.js";
+import 'dotenv/config'
 
 const port = process.env.PORT ?? 4000;
 const DB_HOST = process.env.DB_HOST;
