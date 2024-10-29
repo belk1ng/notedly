@@ -1,5 +1,7 @@
-import { NoteModel } from "./note.js"
+import {NoteModel} from "./note.js"
+import {UserModel} from "./user.js";
 
 export const models = {
-    note: NoteModel
+    note: NoteModel,
+    user: UserModel
 }
