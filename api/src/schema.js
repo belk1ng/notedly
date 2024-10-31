@@ -36,12 +36,12 @@ type Query {
 }
 
 type Mutation {
-    signUp(username: String!, email: String!, password: String!): String!
-    signIn(username: String, email: String, password: String!): String!
+    register(username: String!, email: String!, password: String!): String!
+    login(username: String, email: String, password: String!): String!
 
-    newNote(content: String!): Note!
+    addNote(content: String!): Note!
     updateNote(noteId: ID!, content: String!): Note!
     deleteNote(noteId: ID!): Boolean!
-    toggleFavorite(noteId: ID!): Note!
+    toggleFavoriteNote(noteId: ID!): Note!
 }
 `

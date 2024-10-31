@@ -6,7 +6,7 @@ import {Types} from "mongoose";
 import {ErrorVariant} from "../constants/errors.js";
 
 export const Mutation = {
-    async signUp(_, {username, email, password}, {models}) {
+    async register(_, {username, email, password}, {models}) {
         email = email?.trim()?.toLowerCase();
         username = username?.trim()
 
@@ -28,7 +28,7 @@ export const Mutation = {
             })
         }
     },
-    async signIn(_, {email, username, password}, {models}) {
+    async login(_, {email, username, password}, {models}) {
         email = email?.trim()?.toLowerCase();
         username = username?.trim()
 
@@ -59,7 +59,7 @@ export const Mutation = {
         }
     },
 
-    async newNote(_, {content}, {models, user}) {
+    async addNote(_, {content}, {models, user}) {
         if (!user) {
             throw new GraphQLError('You must be signed in to create a note', {
                 extensions: {
@@ -127,7 +127,7 @@ export const Mutation = {
             return false;
         }
     },
-    async toggleFavorite(_, {noteId}, {models, user}) {
+    async toggleFavoriteNote(_, {noteId}, {models, user}) {
         if (!user) {
             throw new GraphQLError('You must be signed in to toggle favorite notes', {
                 extensions: {
