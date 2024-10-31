@@ -1,4 +1,3 @@
-export const typeDefs = `#graphql
 scalar DateTime
 
 type User {
@@ -26,12 +25,19 @@ type Note {
     updatedAt: DateTime!
 }
 
+type NotesFeed {
+    notes: [Note]!
+    cursor: String
+    hasNextPage: Boolean!
+}
+
 type Query {
     users: [User!]!
     user(username: String!): User
     me: User!
 
     notes: [Note!]!
+    notesFeed(cursor: String!, limit: Int): NotesFeed
     note(noteId: ID!): Note
 }
 
@@ -44,4 +50,3 @@ type Mutation {
     deleteNote(noteId: ID!): Boolean!
     toggleFavoriteNote(noteId: ID!): Note!
 }
-`

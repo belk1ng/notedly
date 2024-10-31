@@ -2,15 +2,19 @@ import express from "express";
 import helmet from "helmet";
 import http from 'http';
 import cors from "cors";
+import 'dotenv/config'
+
 import {expressMiddleware} from '@apollo/server/express4';
 import {ApolloServer} from "@apollo/server"
 import {ApolloServerPluginDrainHttpServer} from '@apollo/server/plugin/drainHttpServer';
+import {createComplexityLimitRule} from 'graphql-validation-complexity';
+import depthLimit from 'graphql-depth-limit'
+
 import {connectToDataBase} from "./mongo.js";
-import {resolvers} from "./resolvers/index.js";
-import {typeDefs} from "./schema.js"
 import {models} from "./models/index.js"
+import {resolvers} from "./resolvers/index.js";
 import {getUser} from "./utils/getUser.js";
-import 'dotenv/config'
+import {readTypeDefs} from "./utils/readTypeDefs.js";
 
 const PORT = Number(process.env.PORT) || 4000;
 
@@ -20,11 +24,15 @@ const app = express();
 const httpServer = http.createServer(app);
 
 const server = new ApolloServer({
-    typeDefs,
+    typeDefs: readTypeDefs(),
     resolvers,
+    validationRules: [
+        createComplexityLimitRule(1000),
+        depthLimit(5),
+    ],
     plugins: [
         ApolloServerPluginDrainHttpServer({httpServer})
-    ]
+    ],
 })
 
 await server.start();
@@ -52,9 +60,11 @@ app.use('/api',
                 models
             }
         }
-    }))
+    })
+)
 
 await new Promise((resolve) =>
     httpServer.listen({port: PORT}, resolve),
 );
+
 console.log(`🚀 Server ready at http://localhost:${PORT}/api`);
