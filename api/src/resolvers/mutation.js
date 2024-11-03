@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import gravatar from 'gravatar';
 import {Types} from "mongoose";
+import RedisGlobalInstance from "../utils/RedisClient.js";
 import {ErrorVariant} from "../constants/errors.js";
 
 export const Mutation = {
@@ -18,7 +19,19 @@ export const Mutation = {
                 email, username, password: hashed, avatar
             });
 
-            return jwt.sign({id: user._id}, process.env.JWT_SECRET, {})
+            const [accessToken, refreshToken] = await Promise.all([
+                jwt.sign({id: user._id}, process.env.JWT_SECRET, {}),
+                jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '30d'})
+            ])
+
+            await RedisGlobalInstance.client.set(refreshToken, user._id, {
+                "EX": 30 * 24 * 60 * 60
+            })
+
+            return {
+                accessToken,
+                refreshToken,
+            }
         } catch (error) {
             console.log(error)
             throw new GraphQLError('Error while creating account', {
@@ -39,7 +52,7 @@ export const Mutation = {
             if (!user) {
                 throw new GraphQLError('User does not exist', {
                     extensions: {
-                        code: ErrorVariant.AuthenticationError,
+                        code: ErrorVariant.NotFoundError,
                         http: {
                             status: 404,
                         }
@@ -61,7 +74,18 @@ export const Mutation = {
                 })
             }
 
-            return jwt.sign({id: user._id}, process.env.JWT_SECRET, {})
+            const [accessToken, refreshToken] = await Promise.all([
+                jwt.sign({id: user._id}, process.env.JWT_SECRET),
+                jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '30d'})
+            ])
+
+            await RedisGlobalInstance.client.SET(refreshToken, user.id, {EX: 30 * 24 * 60 * 60,})
+
+            return {
+                accessToken,
+                refreshToken,
+            }
+
         } catch (error) {
             console.log(error)
             throw new GraphQLError('Error while signing in', {
@@ -69,6 +93,46 @@ export const Mutation = {
                     code: ErrorVariant.UnexpectedError
                 }
             })
+        }
+    },
+    async refresh(_, {refreshToken}, {models}) {
+        const userId = await RedisGlobalInstance.client.get(refreshToken);
+        if (!userId) {
+            throw new GraphQLError('Invalid refresh token', {
+                extensions: {
+                    code: ErrorVariant.AuthenticationError,
+                    http: {
+                        status: 401,
+                    }
+                },
+            });
+        }
+
+        const user = await models.user.findById(userId);
+        if (!user) {
+            throw new GraphQLError('The user not found', {
+                extensions: {
+                    code: ErrorVariant.NotFoundError,
+                    http: {
+                        status: 404,
+                    }
+                },
+            });
+        }
+
+        const [newAccessToken, newRefreshToken] = await Promise.all([
+            jwt.sign({id: user._id}, process.env.JWT_SECRET),
+            jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '30d'})
+        ])
+
+        await Promise.all([
+            RedisGlobalInstance.client.del(refreshToken),
+            RedisGlobalInstance.client.SET(newRefreshToken, user.id, { EX: 30 * 24 * 60 * 60 })
+        ])
+
+        return {
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken,
         }
     },
 

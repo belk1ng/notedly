@@ -1,5 +1,10 @@
 scalar DateTime
 
+type AuthResponse {
+    accessToken: String!
+    refreshToken: String!
+}
+
 type User {
     id: ID!
     username: String!
@@ -42,8 +47,9 @@ type Query {
 }
 
 type Mutation {
-    register(username: String!, email: String!, password: String!): String!
-    login(username: String, email: String, password: String!): String!
+    register(username: String!, email: String!, password: String!): AuthResponse!
+    login(username: String, email: String, password: String!): AuthResponse!
+    refresh(refreshToken: String!): AuthResponse!
 
     addNote(content: String!): Note!
     updateNote(noteId: ID!, content: String!): Note!

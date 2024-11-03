@@ -15,14 +15,14 @@ import {models} from "./models/index.js"
 import {resolvers} from "./resolvers/index.js";
 import {getUser} from "./utils/getUser.js";
 import {readTypeDefs} from "./utils/readTypeDefs.js";
-import {RedisClient} from "./utils/RedisClient.js";
+import RedisGlobalInstance from "./utils/RedisClient.js";
 import {MongoClient} from "./utils/MongoClient.js";
 import {ErrorVariant} from "./constants/errors.js";
 
 const PORT = Number(process.env.PORT) || 4000;
 
 await new MongoClient(process.env.DB_HOST).connect()
-await new RedisClient(process.env.REDIS_HOST).connect();
+await RedisGlobalInstance.connect();
 
 const app = express();
 const httpServer = http.createServer(app);
