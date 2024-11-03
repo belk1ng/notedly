@@ -2,40 +2,40 @@ import jwt from "jsonwebtoken";
 import RedisGlobalClient from "./RedisClient.js";
 
 class TokenService {
-    constructor(redisClientInstance) {
-        this.redis = redisClientInstance;
+  constructor(redisClientInstance) {
+    this.redis = redisClientInstance;
+  }
+
+  async generateTokens(payload) {
+    return Promise.all([
+      jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "15m" }),
+      jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "30d" }),
+    ]);
+  }
+
+  async saveRefreshToken(token, userId) {
+    await this.redis.client.set(token, userId, { EX: 30 * 24 * 60 * 60 });
+  }
+
+  async revokeRefreshToken(refreshToken) {
+    await this.redis.client.del(refreshToken);
+  }
+
+  async verifyAccessToken(token) {
+    if (!token) {
+      throw new Error("No JWT token provided");
     }
 
-    async generateTokens(payload) {
-        return Promise.all([
-            jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '15m'}),
-            jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '30d'})
-        ]);
+    try {
+      return jwt.verify(token, process.env.JWT_SECRET);
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        throw new Error("Session expired");
+      } else {
+        throw new Error("Invalid JWT token");
+      }
     }
-
-    async saveRefreshToken(token, userId) {
-        await this.redis.client.set(token, userId, { EX: 30 * 24 * 60 * 60 });
-    }
-
-    async revokeRefreshToken(refreshToken) {
-        await this.redis.client.del(refreshToken);
-    }
-
-    async verifyAccessToken(token) {
-        if (!token) {
-            throw new Error('No JWT token provided');
-        }
-
-        try {
-            return jwt.verify(token, process.env.JWT_SECRET);
-        } catch (error) {
-            if (error.name === 'TokenExpiredError') {
-                throw new Error('Session expired');
-            } else {
-                throw new Error('Invalid JWT token');
-            }
-        }
-    }
+  }
 }
 
 export default new TokenService(RedisGlobalClient);
