@@ -4,23 +4,25 @@ import http from 'http';
 import cors from "cors";
 import 'dotenv/config'
 
+import {GraphQLError} from "graphql";
 import {expressMiddleware} from '@apollo/server/express4';
 import {ApolloServer} from "@apollo/server"
 import {ApolloServerPluginDrainHttpServer} from '@apollo/server/plugin/drainHttpServer';
 import {createComplexityLimitRule} from 'graphql-validation-complexity';
 import depthLimit from 'graphql-depth-limit'
 
-import {connectToDataBase} from "./mongo.js";
 import {models} from "./models/index.js"
 import {resolvers} from "./resolvers/index.js";
 import {getUser} from "./utils/getUser.js";
 import {readTypeDefs} from "./utils/readTypeDefs.js";
-import {GraphQLError} from "graphql";
+import {RedisClient} from "./utils/RedisClient.js";
+import {MongoClient} from "./utils/MongoClient.js";
 import {ErrorVariant} from "./constants/errors.js";
 
 const PORT = Number(process.env.PORT) || 4000;
 
-await connectToDataBase(process.env.DB_HOST)
+await new MongoClient(process.env.DB_HOST).connect()
+await new RedisClient(process.env.REDIS_HOST).connect();
 
 const app = express();
 const httpServer = http.createServer(app);
