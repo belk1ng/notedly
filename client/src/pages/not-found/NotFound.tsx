@@ -1,5 +1,7 @@
+import { Typography } from "@/components";
+
 const NotFound = () => {
-  return <h1>Not found</h1>;
+  return <Typography variant={"heading-1"}>Page not found</Typography>;
 };
 
 export default NotFound;

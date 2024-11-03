@@ -1,10 +1,15 @@
 import { Outlet } from "react-router-dom";
+import { Typography } from "@/components";
 
 const MainLayout = () => {
   return (
     <div>
-      <header>Header content</header>
-      <aside>Sidebar content</aside>
+      <header>
+        <Typography variant={"heading-1"}>Header content</Typography>
+      </header>
+      <aside>
+        <Typography variant={"heading-2"}>Header content</Typography>
+      </aside>
       <main>
         <Outlet />
       </main>

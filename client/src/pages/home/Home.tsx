@@ -1,9 +1,10 @@
 import { useDocumentTitle } from "@/hooks";
+import { Typography } from "@/components";
 
 const Home = () => {
   useDocumentTitle("Home");
 
-  return <h1>Home</h1>;
+  return <Typography variant={"heading-2"}>Home</Typography>;
 };
 
 export default Home;
