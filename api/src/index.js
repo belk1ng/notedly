@@ -13,13 +13,15 @@ import {models} from "./models/index.js"
 import {resolvers} from "./resolvers/index.js";
 import {readTypeDefs} from "./utils/readTypeDefs.js";
 import RedisClient from "./services/RedisClient.js";
-import {MongoClient} from "./services/MongoClient.js";
+import MongoClient from "./services/MongoClient.js";
 import TokenService from "./services/TokenService.js";
 
 const PORT = Number(process.env.PORT) || 4000;
 
-await new MongoClient(process.env.DB_HOST).connect()
-await RedisClient.connect();
+await Promise.all([
+    MongoClient.connect(),
+    RedisClient.connect()
+])
 
 const app = express();
 const httpServer = http.createServer(app);

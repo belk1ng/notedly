@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-export class MongoClient {
+class MongoClient {
     constructor(host) {
         this.host = host;
 
@@ -24,3 +24,5 @@ export class MongoClient {
         await mongoose.connection.close();
     }
 }
+
+export default new MongoClient(process.env.DB_HOST);
