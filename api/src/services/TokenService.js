@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import RedisGlobalClient from "./RedisClient.js";
+import { SECONDS_IN_MONTH } from "../constants/numbers.js";
 
 class TokenService {
   constructor(redisClientInstance) {
@@ -14,7 +15,7 @@ class TokenService {
   }
 
   async saveRefreshToken(token, userId) {
-    await this.redis.client.set(token, userId, { EX: 30 * 24 * 60 * 60 });
+    await this.redis.client.set(token, userId, { EX: SECONDS_IN_MONTH });
   }
 
   async revokeRefreshToken(refreshToken) {
