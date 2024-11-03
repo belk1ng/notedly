@@ -15,6 +15,8 @@ import {models} from "./models/index.js"
 import {resolvers} from "./resolvers/index.js";
 import {getUser} from "./utils/getUser.js";
 import {readTypeDefs} from "./utils/readTypeDefs.js";
+import {GraphQLError} from "graphql";
+import {ErrorVariant} from "./constants/errors.js";
 
 const PORT = Number(process.env.PORT) || 4000;
 
@@ -53,11 +55,23 @@ app.use('/api',
     expressMiddleware(server, {
         context: async ({req}) => {
             const token = req.headers.authorization;
-            const user = await getUser(token);
+            try {
+                const user = await getUser(token);
 
-            return {
-                user,
-                models
+                return {
+                    user,
+                    models
+                }
+
+            } catch (error) {
+                throw new GraphQLError("", {
+                    extensions: {
+                        code: ErrorVariant.AuthenticationError,
+                        http: {
+                            status: 401,
+                        }
+                    }
+                })
             }
         }
     })

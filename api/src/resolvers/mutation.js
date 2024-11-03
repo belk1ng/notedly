@@ -40,6 +40,10 @@ export const Mutation = {
                 throw new GraphQLError('User does not exist', {
                     extensions: {
                         code: ErrorVariant.AuthenticationError,
+                        http: {
+                            status: 404,
+                        }
+
                     },
                 })
             }
@@ -49,6 +53,10 @@ export const Mutation = {
                 throw new GraphQLError('Wrong credentials were passed', {
                     extensions: {
                         code: ErrorVariant.ForbiddenError,
+                        http: {
+                            status: 400,
+                        }
+
                     },
                 })
             }
@@ -56,6 +64,11 @@ export const Mutation = {
             return jwt.sign({id: user._id}, process.env.JWT_SECRET, {})
         } catch (error) {
             console.log(error)
+            throw new GraphQLError('Error while signing in', {
+                extensions: {
+                    code: ErrorVariant.UnexpectedError
+                }
+            })
         }
     },
 
@@ -114,7 +127,10 @@ export const Mutation = {
         if (note && note.author.toString() !== user.id) {
             throw new GraphQLError('You dont have permission to delete the note', {
                 extensions: {
-                    code: ErrorVariant.ForbiddenError
+                    code: ErrorVariant.ForbiddenError,
+                    http: {
+                        status: 403,
+                    }
                 }
             })
         }
@@ -131,7 +147,10 @@ export const Mutation = {
         if (!user) {
             throw new GraphQLError('You must be signed in to toggle favorite notes', {
                 extensions: {
-                    code: ErrorVariant.AuthenticationError
+                    code: ErrorVariant.AuthenticationError,
+                    http: {
+                        status: 401,
+                    }
                 }
             })
         }
@@ -167,7 +186,10 @@ export const Mutation = {
             console.log(error);
             throw new GraphQLError('Unexpected error occurred', {
                 extensions: {
-                    code: ErrorVariant.UnexpectedError
+                    code: ErrorVariant.UnexpectedError,
+                    http: {
+                        status: 500
+                    }
                 }
             })
         }
