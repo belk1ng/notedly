@@ -1,6 +1,6 @@
 import {createClient} from "redis";
 
-export class RedisClient {
+class RedisClient {
     constructor(url, params = {}) {
         this.client = createClient({
             url,

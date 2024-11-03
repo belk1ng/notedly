@@ -49,7 +49,7 @@ type Query {
 type Mutation {
     register(username: String!, email: String!, password: String!): AuthResponse!
     login(username: String, email: String, password: String!): AuthResponse!
-    refresh(refreshToken: String!): AuthResponse!
+    refreshTokens(refreshToken: String!): AuthResponse!
 
     addNote(content: String!): Note!
     updateNote(noteId: ID!, content: String!): Note!

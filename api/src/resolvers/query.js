@@ -1,18 +1,20 @@
+
+
 export const Query = {
-    async users(_, __, {models}) {
+    users: async(_, __, {models})  =>{
         return models.user.find();
     },
-    async user(_, {username}, {models}) {
+    user: async(_, {username}, {models})  =>{
         return models.user.findOne({username});
     },
-    async me(_, __, {models, user}) {
+    me: async(_, __, {models, user})  =>{
         return models.user.findById(user.id);
     },
 
-    async notes(_, __, {models}) {
+    notes: async(_, __, {models})  =>{
         return models.note.find();
     },
-    async notesFeed(_, {cursor, limit = 10}, {models}) {
+    notesFeed: async(_, {cursor, limit = 10}, {models})  =>{
         let hasNextPage = false;
 
         let cursorQuery = {};
@@ -39,7 +41,7 @@ export const Query = {
             hasNextPage
         }
     },
-    async note(_, {noteId}, {models}) {
+    note: async(_, {noteId}, {models})  =>{
         return models.note.findById(noteId);
     }
 }

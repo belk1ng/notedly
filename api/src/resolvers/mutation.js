@@ -1,13 +1,17 @@
-import {GraphQLError} from 'graphql';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import gravatar from 'gravatar';
 import {Types} from "mongoose";
-import RedisGlobalInstance from "../utils/RedisClient.js";
-import {ErrorVariant} from "../constants/errors.js";
+import RedisClient from "../services/RedisClient.js";
+import TokenService from "../services/TokenService.js";
+import {
+    GraphQLAuthenticationError,
+    GraphQLForbiddenError, GraphQLNotFoundError,
+    GraphQLUnexpectedError
+} from "../constants/errors.js";
+import {authenticate} from "../utils/auth.js";
 
 export const Mutation = {
-    async register(_, {username, email, password}, {models}) {
+    register: async (_, {username, email, password}, {models}) => {
         email = email?.trim()?.toLowerCase();
         username = username?.trim()
 
@@ -19,14 +23,10 @@ export const Mutation = {
                 email, username, password: hashed, avatar
             });
 
-            const [accessToken, refreshToken] = await Promise.all([
-                jwt.sign({id: user._id}, process.env.JWT_SECRET, {}),
-                jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '30d'})
-            ])
-
-            await RedisGlobalInstance.client.set(refreshToken, user._id, {
-                "EX": 30 * 24 * 60 * 60
+            const [accessToken, refreshToken] = await TokenService.generateTokens({
+                id: user.id,
             })
+            await TokenService.saveRefreshToken(refreshToken, user.id)
 
             return {
                 accessToken,
@@ -34,14 +34,10 @@ export const Mutation = {
             }
         } catch (error) {
             console.log(error)
-            throw new GraphQLError('Error while creating account', {
-                extensions: {
-                    code: ErrorVariant.UnexpectedError
-                }
-            })
+            throw new GraphQLUnexpectedError('Unexpected error while creating account')
         }
     },
-    async login(_, {email, username, password}, {models}) {
+    login: async (_, {email, username, password}, {models})  => {
         email = email?.trim()?.toLowerCase();
         username = username?.trim()
 
@@ -50,36 +46,18 @@ export const Mutation = {
                 $or: [{email}, {username}]
             })
             if (!user) {
-                throw new GraphQLError('User does not exist', {
-                    extensions: {
-                        code: ErrorVariant.NotFoundError,
-                        http: {
-                            status: 404,
-                        }
-
-                    },
-                })
+                throw new GraphQLNotFoundError('User does not exist')
             }
 
             const valid = await bcrypt.compare(password, user.password);
             if (!valid) {
-                throw new GraphQLError('Wrong credentials were passed', {
-                    extensions: {
-                        code: ErrorVariant.ForbiddenError,
-                        http: {
-                            status: 400,
-                        }
-
-                    },
-                })
+                throw new GraphQLAuthenticationError('Wrong credentials were passed')
             }
 
-            const [accessToken, refreshToken] = await Promise.all([
-                jwt.sign({id: user._id}, process.env.JWT_SECRET),
-                jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '30d'})
-            ])
-
-            await RedisGlobalInstance.client.SET(refreshToken, user.id, {EX: 30 * 24 * 60 * 60,})
+            const [accessToken, refreshToken] = await TokenService.generateTokens({
+                id: user.id,
+            });
+            await TokenService.saveRefreshToken(refreshToken, user.id)
 
             return {
                 accessToken,
@@ -88,46 +66,27 @@ export const Mutation = {
 
         } catch (error) {
             console.log(error)
-            throw new GraphQLError('Error while signing in', {
-                extensions: {
-                    code: ErrorVariant.UnexpectedError
-                }
-            })
+            throw new GraphQLUnexpectedError('Unexpected error while signing in')
         }
     },
-    async refresh(_, {refreshToken}, {models}) {
-        const userId = await RedisGlobalInstance.client.get(refreshToken);
+    refreshTokens: async (_, {refreshToken}, {models}) => {
+        const userId = await RedisClient.client.get(refreshToken);
         if (!userId) {
-            throw new GraphQLError('Invalid refresh token', {
-                extensions: {
-                    code: ErrorVariant.AuthenticationError,
-                    http: {
-                        status: 401,
-                    }
-                },
-            });
+            throw new GraphQLAuthenticationError('Invalid refresh token')
         }
 
         const user = await models.user.findById(userId);
         if (!user) {
-            throw new GraphQLError('The user not found', {
-                extensions: {
-                    code: ErrorVariant.NotFoundError,
-                    http: {
-                        status: 404,
-                    }
-                },
-            });
+            throw new GraphQLNotFoundError('User does not exist')
         }
 
-        const [newAccessToken, newRefreshToken] = await Promise.all([
-            jwt.sign({id: user._id}, process.env.JWT_SECRET),
-            jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '30d'})
-        ])
+        const [newAccessToken, newRefreshToken] = await TokenService.generateTokens({
+            id: user.id,
+        });
 
         await Promise.all([
-            RedisGlobalInstance.client.del(refreshToken),
-            RedisGlobalInstance.client.SET(newRefreshToken, user.id, { EX: 30 * 24 * 60 * 60 })
+            TokenService.revokeRefreshToken(refreshToken),
+            TokenService.saveRefreshToken(refreshToken, user.id)
         ])
 
         return {
@@ -136,38 +95,18 @@ export const Mutation = {
         }
     },
 
-    async addNote(_, {content}, {models, user}) {
-        if (!user) {
-            throw new GraphQLError('You must be signed in to create a note', {
-                extensions: {
-                    code: ErrorVariant.AuthenticationError
-                }
-            })
-        }
-
+    addNote: authenticate(async (_, {content}, {models, user}) => {
         return models.note.create({
             content: content,
             author: new Types.ObjectId(
                 user.id
             )
         })
-    },
-    async updateNote(_, {noteId, content}, {models, user}) {
-        if (!user) {
-            throw new GraphQLError('You must be signed in to update the note', {
-                extensions: {
-                    code: ErrorVariant.AuthenticationError
-                }
-            })
-        }
-
+    }),
+    updateNote: authenticate(async (_, {noteId, content}, {models, user}) => {
         const note = await models.note.findById(noteId);
         if (note && note.author.toString() !== user.id) {
-            throw new GraphQLError('You dont have permission to update the note', {
-                extensions: {
-                    code: ErrorVariant.ForbiddenError
-                }
-            })
+            throw new GraphQLForbiddenError('You dont have permission to update the note')
         }
 
         return models.note.findOneAndUpdate({
@@ -177,26 +116,11 @@ export const Mutation = {
         }, {
             new: true
         });
-    },
-    async deleteNote(_, {noteId}, {models, user}) {
-        if (!user) {
-            throw new GraphQLError('You must be signed in to delete the note', {
-                extensions: {
-                    code: ErrorVariant.AuthenticationError
-                }
-            })
-        }
-
+    }),
+    deleteNote: authenticate(async (_, {noteId}, {models, user}) => {
         const note = await models.note.findById(noteId);
         if (note && note.author.toString() !== user.id) {
-            throw new GraphQLError('You dont have permission to delete the note', {
-                extensions: {
-                    code: ErrorVariant.ForbiddenError,
-                    http: {
-                        status: 403,
-                    }
-                }
-            })
+            throw new GraphQLForbiddenError('You dont have permission to delete the note')
         }
 
         try {
@@ -204,21 +128,10 @@ export const Mutation = {
             return true
         } catch (error) {
             console.log(error)
-            return false;
+            throw new GraphQLUnexpectedError('Unexpected error while deleting the note')
         }
-    },
-    async toggleFavoriteNote(_, {noteId}, {models, user}) {
-        if (!user) {
-            throw new GraphQLError('You must be signed in to toggle favorite notes', {
-                extensions: {
-                    code: ErrorVariant.AuthenticationError,
-                    http: {
-                        status: 401,
-                    }
-                }
-            })
-        }
-
+    }),
+    toggleFavoriteNote: authenticate(async (_, {noteId}, {models, user}) => {
         const note = await models.note.findById(noteId);
         const isFavorite = note.favoriteBy.indexOf(user.id) !== -1
 
@@ -248,14 +161,7 @@ export const Mutation = {
             }
         } catch (error) {
             console.log(error);
-            throw new GraphQLError('Unexpected error occurred', {
-                extensions: {
-                    code: ErrorVariant.UnexpectedError,
-                    http: {
-                        status: 500
-                    }
-                }
-            })
+            throw new GraphQLUnexpectedError('Unexpected error while toggling favorite flag');
         }
-    }
+    })
 }

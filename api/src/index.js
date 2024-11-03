@@ -3,8 +3,6 @@ import helmet from "helmet";
 import http from 'http';
 import cors from "cors";
 import 'dotenv/config'
-
-import {GraphQLError} from "graphql";
 import {expressMiddleware} from '@apollo/server/express4';
 import {ApolloServer} from "@apollo/server"
 import {ApolloServerPluginDrainHttpServer} from '@apollo/server/plugin/drainHttpServer';
@@ -13,16 +11,15 @@ import depthLimit from 'graphql-depth-limit'
 
 import {models} from "./models/index.js"
 import {resolvers} from "./resolvers/index.js";
-import {getUser} from "./utils/getUser.js";
 import {readTypeDefs} from "./utils/readTypeDefs.js";
-import RedisGlobalInstance from "./utils/RedisClient.js";
-import {MongoClient} from "./utils/MongoClient.js";
-import {ErrorVariant} from "./constants/errors.js";
+import RedisClient from "./services/RedisClient.js";
+import {MongoClient} from "./services/MongoClient.js";
+import TokenService from "./services/TokenService.js";
 
 const PORT = Number(process.env.PORT) || 4000;
 
 await new MongoClient(process.env.DB_HOST).connect()
-await RedisGlobalInstance.connect();
+await RedisClient.connect();
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -58,7 +55,7 @@ app.use('/api',
         context: async ({req}) => {
             const token = req.headers.authorization;
             try {
-                const user = await getUser(token);
+                const user = await TokenService.verifyAccessToken(token);
 
                 return {
                     user,
@@ -66,14 +63,9 @@ app.use('/api',
                 }
 
             } catch (error) {
-                throw new GraphQLError("", {
-                    extensions: {
-                        code: ErrorVariant.AuthenticationError,
-                        http: {
-                            status: 401,
-                        }
-                    }
-                })
+                return {
+                    models
+                }
             }
         }
     })
@@ -83,4 +75,4 @@ await new Promise((resolve) =>
     httpServer.listen({port: PORT}, resolve),
 );
 
-console.log(`🚀 Server ready at http://localhost:${PORT}/api`);
+console.log(`🚀 Server ready`);
