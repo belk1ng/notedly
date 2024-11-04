@@ -1,8 +1,7 @@
-import { NavLink, type LinkProps } from "react-router-dom";
 import styled from "styled-components";
-import { Typography } from "@/components/Typography.tsx";
+import { NavLink } from "react-router-dom";
 
-const StyledLink = styled(NavLink)`
+export const StyledLink = styled(NavLink)`
   text-decoration: none;
   color: ${(props) => props.theme.colors.neutral["gray-2"]};
 
@@ -20,17 +19,8 @@ const StyledLink = styled(NavLink)`
       content: "";
       width: 2px;
       height: 20px;
+      border-radius: 20px;
       background-color: ${(props) => props.theme.colors.main.accent};
     }
   }
 `;
-
-export const Link = ({ children, ...props }: LinkProps) => {
-  return (
-    <StyledLink {...props}>
-      <Typography as="span" variant="body-large">
-        {children}
-      </Typography>
-    </StyledLink>
-  );
-};

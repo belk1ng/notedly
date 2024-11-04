@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import MainLayout from "@/layouts/main-layout";
+import { MainLayout } from "@/layouts";
 
 function load<ExportValue extends { default: ComponentType | null }>(
   loader: () => Promise<ExportValue>,

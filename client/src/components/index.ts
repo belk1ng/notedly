@@ -1,3 +1,4 @@
-export { GlobalStyles } from "./GlobalStyles";
-export { Typography } from "./Typography";
-export { Link } from "./Link";
+export { GlobalStyles } from "./ui/GlobalStyles";
+export { Container } from "./ui/Container";
+export { Typography } from "./typography";
+export { Link } from "./link";

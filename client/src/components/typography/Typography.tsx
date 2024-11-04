@@ -1,5 +1,5 @@
 import type { ComponentPropsWithoutRef } from "react";
-import styled, { css } from "styled-components";
+import { StyledTypography } from "./styled";
 
 export type TypographyVariant =
   | "heading-1"
@@ -7,6 +7,10 @@ export type TypographyVariant =
   | "heading-3"
   | "body-large"
   | "body-small";
+
+export interface StyledProps {
+  $variant: TypographyVariant;
+}
 
 export type TypographyPolymorphic =
   | "h1"
@@ -28,47 +32,6 @@ type Props<As extends TypographyPolymorphic> = {
   as?: As;
   variant?: TypographyVariant;
 } & ComponentPropsWithoutRef<As>;
-
-const StyledTypography = styled.div<{ $variant: TypographyVariant }>`
-  ${(props) => {
-    switch (props.$variant) {
-      case "heading-1":
-        return css`
-          font-weight: 400;
-          font-size: 26px;
-          line-height: 31px;
-        `;
-
-      case "heading-2":
-        return css`
-          font-weight: 400;
-          font-size: 20px;
-          line-height: 24px;
-        `;
-
-      case "heading-3":
-        return css`
-          font-weight: 600;
-          font-size: 16px;
-          line-height: 27px;
-        `;
-
-      case "body-large":
-        return css`
-          font-weight: 400;
-          font-size: 16px;
-          line-height: 27px;
-        `;
-
-      case "body-small":
-        return css`
-          font-weight: 400;
-          font-size: 13px;
-          line-height: 20px;
-        `;
-    }
-  }}
-`;
 
 export const Typography = <As extends TypographyPolymorphic>({
   as,

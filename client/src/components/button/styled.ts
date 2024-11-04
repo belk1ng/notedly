@@ -1,0 +1,43 @@
+import styled, { css } from "styled-components";
+import type { StyledProps } from "./Button.tsx";
+
+export const StyledButton = styled.button<StyledProps>`
+  border: 1px solid;
+  border-radius: 7px;
+  padding: 6px 16px;
+
+  &:not([disabled]) {
+    cursor: pointer;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  ${(props) => {
+    switch (props.$variant) {
+      case "filled":
+        return css`
+          background-color: ${props.theme.colors.main.accent};
+          color: ${props.theme.colors.neutral.white};
+          border-color: ${props.theme.colors.main.accent};
+
+          &:hover {
+            background-color: ${props.theme.colors.main.hover};
+            border-color: ${props.theme.colors.main.hover};
+          }
+        `;
+
+      case "outlined":
+        return css`
+          color: ${props.theme.colors.neutral.primary};
+          background-color: ${props.theme.colors.neutral.white};
+          border: 1px solid ${props.theme.colors.neutral["gray-3"]};
+
+          &:hover {
+            background-color: ${props.theme.colors.neutral["gray-3"]};
+          }
+        `;
+    }
+  }}
+`;

@@ -46,18 +46,6 @@ export const GlobalStyles = createGlobalStyle`
         font: inherit;
     }
 
-    svg *[fill] {
-        fill: currentcolor;
-    }
-
-    svg *[stroke] {
-        stroke: currentcolor;
-    }
-
-    svg * {
-        transition-property: fill, stroke;
-    }
-
     @media (prefers-reduced-motion: reduce) {
         * {
             scroll-behavior: auto !important;

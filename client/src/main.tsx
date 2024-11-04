@@ -4,11 +4,11 @@ import { RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "@/components";
 import { router } from "@/router";
-import { darkTheme } from "@/theme";
+import { lightTheme } from "@/theme";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={lightTheme}>
       <RouterProvider router={router} />
       <GlobalStyles />
     </ThemeProvider>
