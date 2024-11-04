@@ -30,7 +30,7 @@ export const GlobalStyles = createGlobalStyle`
         border: none;
     }
 
-    :where(ul[class]) {
+    ul {
         list-style: none;
     }
 
