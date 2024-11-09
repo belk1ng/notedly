@@ -1,18 +1,14 @@
-import {
-  Component,
-  type PropsWithChildren,
-  type ReactNode,
-  type ErrorInfo,
-} from "react";
+import { ApolloError } from "@apollo/client";
+import { Component, type PropsWithChildren, type ReactNode } from "react";
 import { Typography } from "@/components";
 import { StyledErrorBoundary } from "./styled";
 
 export interface ErrorBoundaryProps {
-  FallbackComponent?: ReactNode;
+  renderFallback?: (error: Error | ApolloError) => ReactNode;
 }
 
 interface State {
-  hasError: boolean;
+  error: Error | null;
 }
 
 export class ErrorBoundary extends Component<
@@ -20,21 +16,22 @@ export class ErrorBoundary extends Component<
   State
 > {
   public state: State = {
-    hasError: false,
+    error: null,
   };
 
-  public static getDerivedStateFromError(_: Error): State {
-    return { hasError: true };
+  public static getDerivedStateFromError(error: Error): State {
+    return { error };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Uncaught error :", error, errorInfo);
+  public componentDidCatch(error: Error) {
+    console.error("Uncaught error :", error);
+    this.setState({ error });
   }
 
   public render() {
-    if (this.state.hasError) {
+    if (this.state.error) {
       return (
-        this.props.FallbackComponent ?? (
+        this.props.renderFallback?.(this.state.error) ?? (
           <StyledErrorBoundary>
             <Typography variant={"heading-1"}>Uncaught error 😵</Typography>
           </StyledErrorBoundary>

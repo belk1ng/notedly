@@ -1,8 +1,8 @@
+import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import { ErrorBoundary } from "@/components";
 import { StyledLayout, StyledLayoutContent } from "./styled";
 import { Sidebar } from "./components";
-import { Suspense } from "react";
 
 export const MainLayout = () => {
   return (

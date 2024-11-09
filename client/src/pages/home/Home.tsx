@@ -37,7 +37,7 @@ const Home = () => {
   };
 
   return (
-    <QueryResult loading={loading} error={error} data={data}>
+    <QueryResult useBoundary loading={loading} error={error} data={data}>
       <StyledHomeContainer>
         <NotesNavigation
           notes={data?.notesFeed?.notes ?? []}

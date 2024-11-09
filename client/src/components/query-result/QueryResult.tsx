@@ -1,6 +1,7 @@
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 import type { QueryResult as ApolloQueryResult } from "@apollo/client";
 import { Typography } from "@/components";
+import { useThrowAsyncError } from "@/hooks";
 
 type BaseQueryResultProps = Pick<
   ApolloQueryResult,
@@ -8,20 +9,31 @@ type BaseQueryResultProps = Pick<
 >;
 
 export interface QueryResultProps
-  extends PropsWithChildren<BaseQueryResultProps> {}
+  extends PropsWithChildren<BaseQueryResultProps> {
+  useBoundary?: boolean;
+  loadingFallback?: ReactNode;
+}
 
 export const QueryResult = ({
   error,
+  useBoundary = false,
   loading,
+  loadingFallback,
   data,
   children,
 }: QueryResultProps) => {
+  const throwAsyncError = useThrowAsyncError();
+
   if (error) {
-    return <p>Error: {error.message}</p>;
+    if (useBoundary) {
+      throwAsyncError(error);
+    } else {
+      return <p>Error: {error.message}</p>;
+    }
   }
 
   if (loading) {
-    return <p>Loading...</p>;
+    return loadingFallback ?? <p>Loading...</p>;
   }
 
   if (data) {

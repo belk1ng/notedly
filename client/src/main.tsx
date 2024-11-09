@@ -10,10 +10,10 @@ import { darkTheme } from "@/theme";
 const client = new ApolloClient({
   uri: import.meta.env.VITE_API_URI,
   cache: new InMemoryCache(),
+  defaultOptions: { watchQuery: { fetchPolicy: "cache-and-network" } },
   devtools: {
     enabled: true,
   },
-  defaultOptions: { watchQuery: { fetchPolicy: "cache-and-network" } },
 });
 
 createRoot(document.getElementById("root")!).render(
