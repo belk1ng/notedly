@@ -138,10 +138,11 @@ export type NotesQuery = { __typename?: 'Query', notes: Array<{ __typename?: 'No
 
 export type NotesFeedQueryVariables = Exact<{
   cursor: Scalars['String']['input'];
+  limit?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type NotesFeedQuery = { __typename?: 'Query', notesFeed: { __typename?: 'NotesFeed', notes: Array<{ __typename?: 'Note', id: string, createdAt: any, content: string, author: { __typename?: 'User', username: string } }> } };
+export type NotesFeedQuery = { __typename?: 'Query', notesFeed: { __typename?: 'NotesFeed', hasNextPage: boolean, cursor?: string | null, notes: Array<{ __typename?: 'Note', id: string, createdAt: any, content: string, author: { __typename?: 'User', username: string } }> } };
 
 
 export const NotesDocument = gql`
@@ -194,8 +195,8 @@ export type NotesLazyQueryHookResult = ReturnType<typeof useNotesLazyQuery>;
 export type NotesSuspenseQueryHookResult = ReturnType<typeof useNotesSuspenseQuery>;
 export type NotesQueryResult = Apollo.QueryResult<NotesQuery, NotesQueryVariables>;
 export const NotesFeedDocument = gql`
-    query NotesFeed($cursor: String!) {
-  notesFeed(cursor: $cursor) {
+    query NotesFeed($cursor: String!, $limit: Int) {
+  notesFeed(cursor: $cursor, limit: $limit) {
     notes {
       id
       createdAt
@@ -204,6 +205,8 @@ export const NotesFeedDocument = gql`
         username
       }
     }
+    hasNextPage
+    cursor
   }
 }
     `;
@@ -221,6 +224,7 @@ export const NotesFeedDocument = gql`
  * const { data, loading, error } = useNotesFeedQuery({
  *   variables: {
  *      cursor: // value for 'cursor'
+ *      limit: // value for 'limit'
  *   },
  * });
  */

@@ -7,9 +7,13 @@ import type { NavigationNote } from "@/typings/note";
 
 export interface NotesNavigationProps {
   notes: NavigationNote[];
+  onLoadMore?: VoidFunction;
 }
 
-export const NotesNavigation = ({ notes }: NotesNavigationProps) => {
+export const NotesNavigation = ({
+  notes,
+  onLoadMore,
+}: NotesNavigationProps) => {
   return (
     <StyledNotesNavigationContainer>
       <StyledNotesNavigationBar>
@@ -21,9 +25,11 @@ export const NotesNavigation = ({ notes }: NotesNavigationProps) => {
           </li>
         </ul>
 
-        <Button fullWidth variant={"outlined"}>
-          Load more
-        </Button>
+        {onLoadMore && (
+          <Button fullWidth variant={"outlined"} onClick={onLoadMore}>
+            Load more
+          </Button>
+        )}
       </StyledNotesNavigationBar>
     </StyledNotesNavigationContainer>
   );

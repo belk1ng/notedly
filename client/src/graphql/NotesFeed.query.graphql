@@ -1,5 +1,5 @@
-query NotesFeed($cursor: String!) {
-    notesFeed(cursor: $cursor) {
+query NotesFeed($cursor: String!, $limit: Int) {
+    notesFeed(cursor: $cursor, limit: $limit) {
         notes {
             id
             createdAt
@@ -8,5 +8,7 @@ query NotesFeed($cursor: String!) {
                 username
             }
         }
+        hasNextPage
+        cursor
     }
 }

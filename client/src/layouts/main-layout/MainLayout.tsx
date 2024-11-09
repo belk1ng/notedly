@@ -1,14 +1,14 @@
 import { Outlet } from "react-router-dom";
-import { StyledLayout } from "./styled";
+import { StyledLayout, StyledLayoutContent } from "./styled";
 import { Sidebar } from "./components";
 
 export const MainLayout = () => {
   return (
     <StyledLayout>
       <Sidebar />
-      <main>
+      <StyledLayoutContent>
         <Outlet />
-      </main>
+      </StyledLayoutContent>
     </StyledLayout>
   );
 };

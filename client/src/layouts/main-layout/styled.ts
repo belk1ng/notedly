@@ -6,3 +6,7 @@ export const StyledLayout = styled.div`
   grid-template-columns: 260px 1fr;
   grid-template-rows: 1fr;
 `;
+
+export const StyledLayoutContent = styled.main`
+  overflow: auto;
+`;

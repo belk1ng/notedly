@@ -15,7 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "query Notes {\n  notes {\n    id\n    content\n    favoriteCount\n    author {\n      id\n      username\n      avatar\n      notes {\n        id\n      }\n    }\n  }\n}": types.NotesDocument,
-    "query NotesFeed($cursor: String!) {\n  notesFeed(cursor: $cursor) {\n    notes {\n      id\n      createdAt\n      content\n      author {\n        username\n      }\n    }\n  }\n}": types.NotesFeedDocument,
+    "query NotesFeed($cursor: String!, $limit: Int) {\n  notesFeed(cursor: $cursor, limit: $limit) {\n    notes {\n      id\n      createdAt\n      content\n      author {\n        username\n      }\n    }\n    hasNextPage\n    cursor\n  }\n}": types.NotesFeedDocument,
 };
 
 /**
@@ -39,7 +39,7 @@ export function gql(source: "query Notes {\n  notes {\n    id\n    content\n    
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "query NotesFeed($cursor: String!) {\n  notesFeed(cursor: $cursor) {\n    notes {\n      id\n      createdAt\n      content\n      author {\n        username\n      }\n    }\n  }\n}"): (typeof documents)["query NotesFeed($cursor: String!) {\n  notesFeed(cursor: $cursor) {\n    notes {\n      id\n      createdAt\n      content\n      author {\n        username\n      }\n    }\n  }\n}"];
+export function gql(source: "query NotesFeed($cursor: String!, $limit: Int) {\n  notesFeed(cursor: $cursor, limit: $limit) {\n    notes {\n      id\n      createdAt\n      content\n      author {\n        username\n      }\n    }\n    hasNextPage\n    cursor\n  }\n}"): (typeof documents)["query NotesFeed($cursor: String!, $limit: Int) {\n  notesFeed(cursor: $cursor, limit: $limit) {\n    notes {\n      id\n      createdAt\n      content\n      author {\n        username\n      }\n    }\n    hasNextPage\n    cursor\n  }\n}"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
