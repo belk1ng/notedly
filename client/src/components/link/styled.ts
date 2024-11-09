@@ -1,13 +1,15 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { NavLink } from "react-router-dom";
 
 export const StyledLink = styled(NavLink)`
-  text-decoration: none;
+  ${(props) => props.theme.mixins.linkReset}
+
   color: ${(props) => props.theme.colors.neutral["gray-2"]};
 
-  &:hover {
-    color: ${(props) => props.theme.colors.neutral.primary};
-  }
+  ${(props) =>
+    props.theme.mixins.hover(css`
+      color: ${props.theme.colors.neutral.primary};
+    `)}
 
   &.active {
     display: flex;

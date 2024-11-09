@@ -6,3 +6,4 @@ export { Button } from "./button";
 export { NotesNavigation } from "./notes-navigation";
 export { NoteLink } from "./note-link";
 export { QueryResult } from "./query-result";
+export { ErrorBoundary } from "./error-boundary";

@@ -8,8 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "api:codegen": "graphql-codegen --config ./src/codegen.ts",
-    "api:watch": "graphql-codegen -w --config ./src/codegen.ts"
+    "api:codegen": "graphql-codegen --require dotenv/config --config ./src/codegen.ts",
+    "api:watch": "yarn api:codegen -- --watch"
   },
   "dependencies": {
     "@apollo/client": "3.11.9",

@@ -1,4 +1,5 @@
 import "styled-components";
+import type { RuleSet } from "styled-components/dist/types";
 
 declare module "styled-components" {
   export interface Colors {
@@ -25,7 +26,15 @@ declare module "styled-components" {
     error: string;
   }
 
+  export interface Mixins {
+    box: (size: number) => RuleSet;
+    buttonReset: () => RuleSet;
+    linkReset: () => RuleSet;
+    hover: (content: RuleSet) => RuleSet;
+  }
+
   export interface DefaultTheme {
     colors: Colors;
+    mixins: Mixins;
   }
 }

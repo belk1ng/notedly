@@ -12,9 +12,8 @@ export const Sidebar = () => {
           Notedly
         </Typography>
       </StyledAsideHeader>
-      <main>
-        <Navigation />
-      </main>
+
+      <Navigation />
     </StyledAside>
   );
 };

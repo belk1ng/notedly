@@ -1,8 +1,10 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Typography } from "@/components";
 import { StyledNoteLinkProps } from "./NoteLink";
 
 export const StyledNoteLinkContainer = styled.article<StyledNoteLinkProps>`
+  ${(props) => props.theme.mixins.linkReset}
+
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -16,12 +18,12 @@ export const StyledNoteLinkContainer = styled.article<StyledNoteLinkProps>`
   background-color: ${(props) =>
     props.$active ? props.theme.colors.neutral["gray-3"] : "transparent"};
 
-  &:hover {
-    background-color: ${(props) =>
-      props.$active
+  ${(props) =>
+    props.theme.mixins.hover(css`
+      background-color: ${props.$active
         ? props.theme.colors.neutral["gray-3"]
         : props.theme.colors.neutral["gray-4"]};
-  }
+    `)}
 `;
 
 export const StyledNoteLinkTitle = styled(Typography)`

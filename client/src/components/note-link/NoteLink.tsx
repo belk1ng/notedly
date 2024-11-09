@@ -1,10 +1,10 @@
+import { useParams, Link } from "react-router-dom";
 import {
   StyledNoteLinkContainer,
   StyledNoteLinkText,
   StyledNoteLinkTitle,
 } from "./styled";
 import { NavigationNoteFragment } from "@/__generated__/types";
-import { useNavigate, useParams } from "react-router-dom";
 
 export interface StyledNoteLinkProps {
   $active?: boolean;
@@ -15,18 +15,16 @@ export interface NoteLinkProps {
 }
 
 export const NoteLink = ({ note }: NoteLinkProps) => {
-  const navigate = useNavigate();
-
   const params = useParams();
-
-  const onClick = () => {
-    navigate(`/home/${note.id}`);
-  };
 
   const isActive = params?.noteId === note.id;
 
   return (
-    <StyledNoteLinkContainer $active={isActive} onClick={onClick}>
+    <StyledNoteLinkContainer
+      to={`/home/${note.id}`}
+      $active={isActive}
+      as={Link}
+    >
       <StyledNoteLinkTitle component={"h2"} variant={"body-large"}>
         Mocked title
       </StyledNoteLinkTitle>
