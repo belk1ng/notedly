@@ -131,6 +131,18 @@ export type User = {
   username: Scalars['String']['output'];
 };
 
+export type FavoriteNotesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FavoriteNotesQuery = { __typename?: 'Query', me: { __typename?: 'User', favoriteNotes: Array<{ __typename?: 'Note', id: string, content: string, createdAt: any, author: { __typename?: 'User', username: string } }> } };
+
+export type MyNotesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyNotesQuery = { __typename?: 'Query', me: { __typename?: 'User', notes: Array<{ __typename?: 'Note', id: string, content: string, createdAt: any, author: { __typename?: 'User', username: string } }> } };
+
+export type NavigationNoteFragment = { __typename?: 'Note', id: string, content: string, createdAt: any, author: { __typename?: 'User', username: string } };
+
 export type NotesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -142,9 +154,100 @@ export type NotesFeedQueryVariables = Exact<{
 }>;
 
 
-export type NotesFeedQuery = { __typename?: 'Query', notesFeed: { __typename?: 'NotesFeed', hasNextPage: boolean, cursor?: string | null, notes: Array<{ __typename?: 'Note', id: string, createdAt: any, content: string, author: { __typename?: 'User', username: string } }> } };
+export type NotesFeedQuery = { __typename?: 'Query', notesFeed: { __typename?: 'NotesFeed', hasNextPage: boolean, cursor?: string | null, notes: Array<{ __typename?: 'Note', id: string, content: string, createdAt: any, author: { __typename?: 'User', username: string } }> } };
 
+export const NavigationNoteFragmentDoc = gql`
+    fragment NavigationNote on Note {
+  id
+  content
+  createdAt
+  author {
+    username
+  }
+}
+    `;
+export const FavoriteNotesDocument = gql`
+    query FavoriteNotes {
+  me {
+    favoriteNotes {
+      ...NavigationNote
+    }
+  }
+}
+    ${NavigationNoteFragmentDoc}`;
 
+/**
+ * __useFavoriteNotesQuery__
+ *
+ * To run a query within a React component, call `useFavoriteNotesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFavoriteNotesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFavoriteNotesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFavoriteNotesQuery(baseOptions?: Apollo.QueryHookOptions<FavoriteNotesQuery, FavoriteNotesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FavoriteNotesQuery, FavoriteNotesQueryVariables>(FavoriteNotesDocument, options);
+      }
+export function useFavoriteNotesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FavoriteNotesQuery, FavoriteNotesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FavoriteNotesQuery, FavoriteNotesQueryVariables>(FavoriteNotesDocument, options);
+        }
+export function useFavoriteNotesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FavoriteNotesQuery, FavoriteNotesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FavoriteNotesQuery, FavoriteNotesQueryVariables>(FavoriteNotesDocument, options);
+        }
+export type FavoriteNotesQueryHookResult = ReturnType<typeof useFavoriteNotesQuery>;
+export type FavoriteNotesLazyQueryHookResult = ReturnType<typeof useFavoriteNotesLazyQuery>;
+export type FavoriteNotesSuspenseQueryHookResult = ReturnType<typeof useFavoriteNotesSuspenseQuery>;
+export type FavoriteNotesQueryResult = Apollo.QueryResult<FavoriteNotesQuery, FavoriteNotesQueryVariables>;
+export const MyNotesDocument = gql`
+    query MyNotes {
+  me {
+    notes {
+      ...NavigationNote
+    }
+  }
+}
+    ${NavigationNoteFragmentDoc}`;
+
+/**
+ * __useMyNotesQuery__
+ *
+ * To run a query within a React component, call `useMyNotesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyNotesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyNotesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMyNotesQuery(baseOptions?: Apollo.QueryHookOptions<MyNotesQuery, MyNotesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MyNotesQuery, MyNotesQueryVariables>(MyNotesDocument, options);
+      }
+export function useMyNotesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyNotesQuery, MyNotesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MyNotesQuery, MyNotesQueryVariables>(MyNotesDocument, options);
+        }
+export function useMyNotesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<MyNotesQuery, MyNotesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<MyNotesQuery, MyNotesQueryVariables>(MyNotesDocument, options);
+        }
+export type MyNotesQueryHookResult = ReturnType<typeof useMyNotesQuery>;
+export type MyNotesLazyQueryHookResult = ReturnType<typeof useMyNotesLazyQuery>;
+export type MyNotesSuspenseQueryHookResult = ReturnType<typeof useMyNotesSuspenseQuery>;
+export type MyNotesQueryResult = Apollo.QueryResult<MyNotesQuery, MyNotesQueryVariables>;
 export const NotesDocument = gql`
     query Notes {
   notes {
@@ -198,18 +301,13 @@ export const NotesFeedDocument = gql`
     query NotesFeed($cursor: String!, $limit: Int) {
   notesFeed(cursor: $cursor, limit: $limit) {
     notes {
-      id
-      createdAt
-      content
-      author {
-        username
-      }
+      ...NavigationNote
     }
     hasNextPage
     cursor
   }
 }
-    `;
+    ${NavigationNoteFragmentDoc}`;
 
 /**
  * __useNotesFeedQuery__

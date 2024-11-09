@@ -1,0 +1,8 @@
+fragment NavigationNote on Note {
+    id
+    content
+    createdAt
+    author {
+        username
+    }
+}

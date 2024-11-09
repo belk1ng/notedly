@@ -3,14 +3,14 @@ import {
   StyledNoteLinkTitle,
   StyledNoteLinkText,
 } from "./styled";
-import type { NavigationNote } from "@/typings/note";
+import { NavigationNoteFragment } from "@/__generated__/types";
 
 export interface StyledNoteLinkProps {
   $active?: boolean;
 }
 
 export interface NoteLinkProps {
-  note: NavigationNote;
+  note: NavigationNoteFragment;
   active?: boolean;
 }
 

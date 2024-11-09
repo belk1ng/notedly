@@ -3,10 +3,10 @@ import {
   StyledNotesNavigationBar,
   StyledNotesNavigationContainer,
 } from "./styled";
-import type { NavigationNote } from "@/typings/note";
+import { NavigationNoteFragment } from "@/__generated__/types";
 
 export interface NotesNavigationProps {
-  notes: NavigationNote[];
+  notes: NavigationNoteFragment[];
   onLoadMore?: VoidFunction;
 }
 

@@ -1,12 +1,7 @@
 query NotesFeed($cursor: String!, $limit: Int) {
     notesFeed(cursor: $cursor, limit: $limit) {
         notes {
-            id
-            createdAt
-            content
-            author {
-                username
-            }
+            ...NavigationNote
         }
         hasNextPage
         cursor
