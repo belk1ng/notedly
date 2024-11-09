@@ -1,0 +1,15 @@
+query Notes {
+    notes {
+        id
+        content
+        favoriteCount
+        author {
+            id
+            username
+            avatar
+            notes {
+                id
+            }
+        }
+    }
+}

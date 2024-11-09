@@ -3,9 +3,10 @@ import {
   StyledNotesNavigationBar,
   StyledNotesNavigationContainer,
 } from "./styled";
+import type { NavigationNote } from "@/typings/note";
 
 export interface NotesNavigationProps {
-  notes: any[];
+  notes: NavigationNote[];
 }
 
 export const NotesNavigation = ({ notes }: NotesNavigationProps) => {

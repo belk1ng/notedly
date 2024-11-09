@@ -1,50 +1,29 @@
-import { gql, useQuery } from "@apollo/client";
 import { useDocumentTitle } from "@/hooks";
-import { NotesNavigation, Typography } from "@/components";
+import { NotesNavigation, QueryResult, Typography } from "@/components";
 import { StyledHomeContainer } from "./styled";
-
-const GET_NOTES = gql`
-  query NotesFeed($cursor: String!) {
-    notesFeed(cursor: $cursor) {
-      notes {
-        id
-        createdAt
-        content
-        author {
-          username
-        }
-      }
-    }
-  }
-`;
+import { useNotesFeedQuery } from "@/__generated__/types";
 
 const Home = () => {
   useDocumentTitle("Home");
 
-  const { loading, error, data } = useQuery(GET_NOTES, {
+  const { loading, error, data } = useNotesFeedQuery({
     variables: {
       cursor: "",
     },
   });
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>Error: {error.message}</p>;
-  }
-
   return (
-    <StyledHomeContainer>
-      <NotesNavigation notes={data.notesFeed.notes} />
+    <QueryResult loading={loading} error={error} data={data}>
+      <StyledHomeContainer>
+        <NotesNavigation notes={data?.notesFeed?.notes ?? []} />
 
-      <section>
-        <Typography component={"h3"} variant={"heading-2"}>
-          Home
-        </Typography>
-      </section>
-    </StyledHomeContainer>
+        <section>
+          <Typography component={"h3"} variant={"heading-2"}>
+            Home
+          </Typography>
+        </section>
+      </StyledHomeContainer>
+    </QueryResult>
   );
 };
 

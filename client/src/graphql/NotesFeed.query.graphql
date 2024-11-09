@@ -1,0 +1,12 @@
+query NotesFeed($cursor: String!) {
+    notesFeed(cursor: $cursor) {
+        notes {
+            id
+            createdAt
+            content
+            author {
+                username
+            }
+        }
+    }
+}
