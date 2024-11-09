@@ -17,7 +17,10 @@ export const StyledNoteLinkContainer = styled.article<StyledNoteLinkProps>`
     props.$active ? props.theme.colors.neutral["gray-3"] : "transparent"};
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.neutral["gray-4"]};
+    background-color: ${(props) =>
+      props.$active
+        ? props.theme.colors.neutral["gray-3"]
+        : props.theme.colors.neutral["gray-4"]};
   }
 `;
 

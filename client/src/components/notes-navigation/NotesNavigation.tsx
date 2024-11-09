@@ -18,11 +18,11 @@ export const NotesNavigation = ({
     <StyledNotesNavigationContainer>
       <StyledNotesNavigationBar>
         <ul>
-          <li>
-            {notes.map((note) => (
-              <NoteLink key={note.id} note={note} />
-            ))}
-          </li>
+          {notes.map((note) => (
+            <li key={note.id}>
+              <NoteLink note={note} />
+            </li>
+          ))}
         </ul>
 
         {onLoadMore && (

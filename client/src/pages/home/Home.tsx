@@ -1,15 +1,18 @@
+import { useParams } from "react-router-dom";
 import { useDocumentTitle } from "@/hooks";
 import { NotesNavigation, QueryResult, Typography } from "@/components";
-import { StyledHomeContainer } from "./styled";
 import { useNotesFeedQuery } from "@/__generated__/types";
+import { StyledHomeContainer } from "./styled";
 
 const Home = () => {
   useDocumentTitle("Home");
 
+  const params = useParams();
+
   const { loading, error, data, fetchMore } = useNotesFeedQuery({
     variables: {
       cursor: "",
-      limit: 5,
+      limit: 10,
     },
   });
 
@@ -43,7 +46,10 @@ const Home = () => {
 
         <section style={{ padding: "40px 13px" }}>
           <Typography component={"h3"} variant={"heading-2"}>
-            Home
+            {params?.noteId
+              ? data?.notesFeed?.notes.find(({ id }) => id === params?.noteId)
+                  ?.content
+              : "Home"}
           </Typography>
         </section>
       </StyledHomeContainer>
