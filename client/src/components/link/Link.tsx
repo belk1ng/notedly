@@ -5,7 +5,7 @@ import { StyledLink } from "./styled";
 export const Link = ({ children, ...props }: LinkProps) => {
   return (
     <StyledLink {...props}>
-      <Typography as="span" variant="body-large">
+      <Typography component="span" variant="body-large">
         {children}
       </Typography>
     </StyledLink>

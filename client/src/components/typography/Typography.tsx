@@ -26,18 +26,19 @@ export type TypographyPolymorphic =
   | "blockquote"
   | "q"
   | "code"
-  | "pre";
+  | "pre"
+  | "time";
 
-type Props<As extends TypographyPolymorphic> = {
-  as?: As;
+export type TypographyProps<As extends TypographyPolymorphic> = {
+  component?: As;
   variant?: TypographyVariant;
 } & ComponentPropsWithoutRef<As>;
 
 export const Typography = <As extends TypographyPolymorphic>({
-  as,
-  variant = "body-large",
+  component,
+  variant = "body-small",
   ...props
-}: Props<As>) => {
+}: TypographyProps<As>) => {
   const map: Record<TypographyVariant, TypographyPolymorphic> = {
     "heading-1": "h1",
     "heading-2": "h2",
@@ -46,7 +47,7 @@ export const Typography = <As extends TypographyPolymorphic>({
     "body-small": "span",
   };
 
-  const Component = as ?? map[variant];
+  const Component = component ?? map[variant];
 
   return <StyledTypography as={Component} $variant={variant} {...props} />;
 };

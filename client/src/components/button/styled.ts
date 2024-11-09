@@ -1,7 +1,8 @@
 import styled, { css } from "styled-components";
-import type { StyledProps } from "./Button.tsx";
+import type { StyledButtonProps } from "./Button.tsx";
 
-export const StyledButton = styled.button<StyledProps>`
+export const StyledButton = styled.button<StyledButtonProps>`
+  width: ${(props) => (props.$fullWidth ? "100%" : "initial")};
   border: 1px solid;
   border-radius: 7px;
   padding: 6px 16px;
@@ -32,7 +33,7 @@ export const StyledButton = styled.button<StyledProps>`
         return css`
           color: ${props.theme.colors.neutral.primary};
           background-color: ${props.theme.colors.neutral.white};
-          border: 1px solid ${props.theme.colors.neutral["gray-3"]};
+          border-color: ${props.theme.colors.neutral["gray-3"]};
 
           &:hover {
             background-color: ${props.theme.colors.neutral["gray-3"]};

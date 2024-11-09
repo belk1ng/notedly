@@ -8,7 +8,7 @@ export const Sidebar = () => {
     <StyledAside>
       <StyledAsideHeader>
         <LogoIcon />
-        <Typography variant="heading-3" as="h1">
+        <Typography variant="heading-3" component="h1">
           Notedly
         </Typography>
       </StyledAsideHeader>

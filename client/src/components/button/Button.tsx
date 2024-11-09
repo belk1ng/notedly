@@ -1,20 +1,27 @@
 import type { HTMLAttributes } from "react";
-import { StyledButton } from "./styled.ts";
 import { Typography } from "@/components";
+import { StyledButton } from "./styled";
 
 export type ButtonVariant = "filled" | "outlined";
 
-export interface StyledProps {
+export interface StyledButtonProps {
   $variant: ButtonVariant;
+  $fullWidth?: boolean;
 }
 
-interface Props extends HTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
+  fullWidth?: boolean;
 }
 
-export const Button = ({ variant = "filled", children, ...props }: Props) => {
+export const Button = ({
+  variant = "filled",
+  fullWidth = false,
+  children,
+  ...props
+}: ButtonProps) => {
   return (
-    <StyledButton $variant={variant} {...props}>
+    <StyledButton $fullWidth={fullWidth} $variant={variant} {...props}>
       <Typography variant="body-small">{children}</Typography>
     </StyledButton>
   );

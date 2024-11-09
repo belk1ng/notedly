@@ -25,6 +25,11 @@ export const GlobalStyles = createGlobalStyle`
         padding: 0;
         line-height: 1.5;
     }
+    
+    *::selection {
+        background-color: ${(props) => props.theme.colors.main.accent};
+        color: ${(props) => props.theme.colors.neutral.white};
+    }
 
     :where(fieldset[class]) {
         border: none;
