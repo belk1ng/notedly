@@ -9,7 +9,7 @@ export const paths = {
   home: {
     root: path(PROTECTED_ROUTES_ROOT, "home"),
     detail: {
-      path: path(PROTECTED_ROUTES_ROOT, "notes/:noteId"),
+      path: path(PROTECTED_ROUTES_ROOT, "home/:noteId"),
       view: (noteId: string) => path(PROTECTED_ROUTES_ROOT, `notes/${noteId}`),
     },
   },

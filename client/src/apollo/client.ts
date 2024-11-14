@@ -79,7 +79,6 @@ const createAuthLink = (refreshTokensMutation: () => Promise<void>) => {
 
       return prevContext;
     }),
-    authLink,
   ];
 
   return [...errorLink, authLink];

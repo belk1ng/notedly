@@ -8,26 +8,31 @@ export const useAuth = () => {
   const { loading: isAuthenticatedLoading, data: isAuthenticatedData } =
     useIsAuthenticatedQuery();
 
-  const [getUserInfo, { loading: userInfoLoading, error: userInfoError }] =
-    useUserInfoLazyQuery({
-      onCompleted(data) {
-        AuthService.setInitialized();
-
-        if (data) {
-          AuthService.setAuthenticated(true);
-        }
-      },
-      onError() {
-        AuthService.setInitialized();
-      },
-    });
+  const [
+    getUserInfo,
+    { loading: userInfoLoading, called: userInfoCalled, error: userInfoError },
+  ] = useUserInfoLazyQuery({
+    fetchPolicy: "network-only",
+    onCompleted(data) {
+      if (data) {
+        AuthService.setAuthenticated(true);
+      }
+    },
+    onError() {
+      AuthService.setAuthenticated(false);
+    },
+  });
 
   const isLoading = isAuthenticatedLoading || userInfoLoading;
   const isInitialized = isAuthenticatedData?.isInitialized;
   const isAuthenticated = isInitialized && isAuthenticatedData?.isAuthenticated;
   const hasError = !!userInfoError;
 
-  if (!isInitialized && !isLoading && !hasError) {
+  const isAppInInitialState =
+    !userInfoCalled && !isInitialized && !isLoading && !hasError;
+
+  if (isAppInInitialState) {
+    AuthService.setInitialized();
     void getUserInfo();
   }
 
