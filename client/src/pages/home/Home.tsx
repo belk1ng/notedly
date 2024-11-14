@@ -1,6 +1,6 @@
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useDocumentTitle } from "@/hooks";
-import { NotesNavigation, QueryResult, Typography } from "@/components";
+import { Button, NotesNavigation, QueryResult, Typography } from "@/components";
 import { useNotesFeedQuery } from "@/apollo/generated/types";
 import { StyledHomeContainer } from "./styled";
 
@@ -53,8 +53,6 @@ const Home = () => {
           </Typography>
         </section>
       </StyledHomeContainer>
-
-      <Link to={"/auth"}>Auth</Link>
     </QueryResult>
   );
 };

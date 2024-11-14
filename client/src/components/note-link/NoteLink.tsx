@@ -5,6 +5,7 @@ import {
   StyledNoteLinkTitle,
 } from "./styled";
 import { NavigationNoteFragment } from "@/apollo/generated/types";
+import { Ripple } from "../ripple";
 
 export interface StyledNoteLinkProps {
   $active?: boolean;
@@ -41,6 +42,8 @@ export const NoteLink = ({ note }: NoteLinkProps) => {
       >
         {new Date(note.createdAt).toDateString()}
       </StyledNoteLinkText>
+
+      <Ripple />
     </StyledNoteLinkContainer>
   );
 };

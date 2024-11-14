@@ -1,6 +1,7 @@
 import type { ButtonHTMLAttributes } from "react";
 import { Typography } from "@/components";
 import { StyledButton } from "./styled";
+import { Ripple } from "../ripple";
 
 export type ButtonVariant = "filled" | "outlined";
 
@@ -23,6 +24,7 @@ export const Button = ({
   return (
     <StyledButton $fullWidth={fullWidth} $variant={variant} {...props}>
       <Typography variant="body-small">{children}</Typography>
+      <Ripple />
     </StyledButton>
   );
 };

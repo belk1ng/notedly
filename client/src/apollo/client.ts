@@ -107,7 +107,7 @@ const updateTokens = async () => {
       });
     }
   } catch (error) {
-    console.log("Error while refreshing tokens", error);
+    console.debug(["🚫Error while refreshing tokens.", error].join("\n"));
     AuthService.logout();
     throw error;
   }
