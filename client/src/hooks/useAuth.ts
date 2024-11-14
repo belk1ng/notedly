@@ -1,12 +1,11 @@
-import {
-  useIsAuthenticatedQuery,
-  useUserInfoLazyQuery,
-} from "@/apollo/generated/types";
+import { useUserInfoLazyQuery } from "@/apollo/generated/types";
 import { AuthService } from "@/apollo/services";
+import { useReactiveVar } from "@apollo/client";
 
 export const useAuth = () => {
-  const { loading: isAuthenticatedLoading, data: isAuthenticatedData } =
-    useIsAuthenticatedQuery();
+  const isInitialized = useReactiveVar(AuthService.isInitialized);
+
+  const isAuthenticated = useReactiveVar(AuthService.isAuthenticated);
 
   const [
     getUserInfo,
@@ -14,27 +13,27 @@ export const useAuth = () => {
   ] = useUserInfoLazyQuery({
     fetchPolicy: "network-only",
     onCompleted(data) {
+      AuthService.setInitialized();
+
       if (data) {
         AuthService.setAuthenticated(true);
       }
     },
     onError() {
+      AuthService.setInitialized();
       AuthService.setAuthenticated(false);
     },
   });
 
-  const isLoading = isAuthenticatedLoading || userInfoLoading;
-  const isInitialized = isAuthenticatedData?.isInitialized;
-  const isAuthenticated = isInitialized && isAuthenticatedData?.isAuthenticated;
-  const hasError = !!userInfoError;
-
-  const isAppInInitialState =
-    !userInfoCalled && !isInitialized && !isLoading && !hasError;
+  const isAppInInitialState = !userInfoCalled && !isInitialized;
 
   if (isAppInInitialState) {
-    AuthService.setInitialized();
     void getUserInfo();
   }
 
-  return { isLoading, isAuthenticated, hasError };
+  return {
+    isLoading: userInfoLoading,
+    isAuthenticated,
+    hasError: !!userInfoError,
+  };
 };

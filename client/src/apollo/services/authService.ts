@@ -19,31 +19,13 @@ type AuthPayloadTokens = Omit<AuthResponse, "__typename">;
 class AuthenticationService {
   /**
    * Reactive variable to track the app initialization state.
-   * @private
    */
-  private isInitializedVar = makeVar(false);
+  public readonly isInitialized = makeVar(false);
 
   /**
    * Reactive variable to track the authentication state.
-   * @private
    */
-  private readonly isAuthenticatedVar = makeVar(false);
-
-  /**
-   * Getter to check if the app is initialized.
-   * @returns {boolean} Whether the app is initialized.
-   */
-  public get isInitialized() {
-    return this.isInitializedVar();
-  }
-
-  /**
-   * Getter to check if the user is authenticated.
-   * @returns {boolean} Whether the user is authenticated.
-   */
-  public get isAuthenticated() {
-    return this.isAuthenticatedVar();
-  }
+  public readonly isAuthenticated = makeVar(false);
 
   /**
    * Getter to retrieve the access token from local storage.
@@ -74,7 +56,7 @@ class AuthenticationService {
    * Method to set the app initialized.
    */
   public setInitialized() {
-    this.isInitializedVar(true);
+    this.isInitialized(true);
   }
 
   /**
@@ -82,7 +64,7 @@ class AuthenticationService {
    * @param {boolean} value - Whether the user is authenticated.
    */
   public setAuthenticated(value: boolean) {
-    this.isAuthenticatedVar(value);
+    this.isAuthenticated(value);
   }
 
   /**

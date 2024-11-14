@@ -124,12 +124,12 @@ export const client = new ApolloClient({
         fields: {
           isInitialized: {
             read() {
-              return AuthService.isInitialized;
+              return AuthService.isInitialized();
             },
           },
           isAuthenticated: {
             read() {
-              return AuthService.isAuthenticated;
+              return AuthService.isInitialized();
             },
           },
         },
