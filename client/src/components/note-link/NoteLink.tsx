@@ -4,7 +4,7 @@ import {
   StyledNoteLinkText,
   StyledNoteLinkTitle,
 } from "./styled";
-import { NavigationNoteFragment } from "@/__generated__/types";
+import { NavigationNoteFragment } from "@/apollo/generated/types";
 
 export interface StyledNoteLinkProps {
   $active?: boolean;

@@ -1,3 +1,5 @@
+import { authenticate } from "../utils/auth.js";
+
 export const Query = {
   users: async (_, __, { models }) => {
     return models.user.find();
@@ -5,9 +7,9 @@ export const Query = {
   user: async (_, { username }, { models }) => {
     return models.user.findOne({ username });
   },
-  me: async (_, __, { models, user }) => {
+  me: authenticate(async (_, __, { models, user }) => {
     return models.user.findById(user.id);
-  },
+  }),
 
   notes: async (_, __, { models }) => {
     return models.note.find();

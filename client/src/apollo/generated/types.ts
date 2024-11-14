@@ -15,6 +15,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: { input: any; output: any; }
 };
 
@@ -95,6 +96,8 @@ export type NotesFeed = {
 
 export type Query = {
   __typename?: 'Query';
+  isAuthenticated: Scalars['Boolean']['output'];
+  isInitialized: Scalars['Boolean']['output'];
   me: User;
   note?: Maybe<Note>;
   notes: Array<Note>;
@@ -136,6 +139,19 @@ export type FavoriteNotesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type FavoriteNotesQuery = { __typename?: 'Query', me: { __typename?: 'User', favoriteNotes: Array<{ __typename?: 'Note', id: string, content: string, createdAt: any, author: { __typename?: 'User', username: string } }> } };
 
+export type IsAuthenticatedQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type IsAuthenticatedQuery = { __typename?: 'Query', isAuthenticated: boolean, isInitialized: boolean };
+
+export type LoginMutationVariables = Exact<{
+  username: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string } };
+
 export type MyNotesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -155,6 +171,27 @@ export type NotesFeedQueryVariables = Exact<{
 
 
 export type NotesFeedQuery = { __typename?: 'Query', notesFeed: { __typename?: 'NotesFeed', hasNextPage: boolean, cursor?: string | null, notes: Array<{ __typename?: 'Note', id: string, content: string, createdAt: any, author: { __typename?: 'User', username: string } }> } };
+
+export type RefreshTokensMutationVariables = Exact<{
+  refreshToken: Scalars['String']['input'];
+}>;
+
+
+export type RefreshTokensMutation = { __typename?: 'Mutation', refreshTokens: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string } };
+
+export type RegisterMutationVariables = Exact<{
+  username: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+}>;
+
+
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'AuthResponse', accessToken: string, refreshToken: string } };
+
+export type UserInfoQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserInfoQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, username: string, avatar?: string | null } };
 
 export const NavigationNoteFragmentDoc = gql`
     fragment NavigationNote on Note {
@@ -207,6 +244,79 @@ export type FavoriteNotesQueryHookResult = ReturnType<typeof useFavoriteNotesQue
 export type FavoriteNotesLazyQueryHookResult = ReturnType<typeof useFavoriteNotesLazyQuery>;
 export type FavoriteNotesSuspenseQueryHookResult = ReturnType<typeof useFavoriteNotesSuspenseQuery>;
 export type FavoriteNotesQueryResult = Apollo.QueryResult<FavoriteNotesQuery, FavoriteNotesQueryVariables>;
+export const IsAuthenticatedDocument = gql`
+    query IsAuthenticated {
+  isAuthenticated @client
+  isInitialized @client
+}
+    `;
+
+/**
+ * __useIsAuthenticatedQuery__
+ *
+ * To run a query within a React component, call `useIsAuthenticatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsAuthenticatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsAuthenticatedQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useIsAuthenticatedQuery(baseOptions?: Apollo.QueryHookOptions<IsAuthenticatedQuery, IsAuthenticatedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<IsAuthenticatedQuery, IsAuthenticatedQueryVariables>(IsAuthenticatedDocument, options);
+      }
+export function useIsAuthenticatedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IsAuthenticatedQuery, IsAuthenticatedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<IsAuthenticatedQuery, IsAuthenticatedQueryVariables>(IsAuthenticatedDocument, options);
+        }
+export function useIsAuthenticatedSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<IsAuthenticatedQuery, IsAuthenticatedQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<IsAuthenticatedQuery, IsAuthenticatedQueryVariables>(IsAuthenticatedDocument, options);
+        }
+export type IsAuthenticatedQueryHookResult = ReturnType<typeof useIsAuthenticatedQuery>;
+export type IsAuthenticatedLazyQueryHookResult = ReturnType<typeof useIsAuthenticatedLazyQuery>;
+export type IsAuthenticatedSuspenseQueryHookResult = ReturnType<typeof useIsAuthenticatedSuspenseQuery>;
+export type IsAuthenticatedQueryResult = Apollo.QueryResult<IsAuthenticatedQuery, IsAuthenticatedQueryVariables>;
+export const LoginDocument = gql`
+    mutation Login($username: String!, $password: String!) {
+  login(username: $username, password: $password) {
+    accessToken
+    refreshToken
+  }
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const MyNotesDocument = gql`
     query MyNotes {
   me {
@@ -342,3 +452,114 @@ export type NotesFeedQueryHookResult = ReturnType<typeof useNotesFeedQuery>;
 export type NotesFeedLazyQueryHookResult = ReturnType<typeof useNotesFeedLazyQuery>;
 export type NotesFeedSuspenseQueryHookResult = ReturnType<typeof useNotesFeedSuspenseQuery>;
 export type NotesFeedQueryResult = Apollo.QueryResult<NotesFeedQuery, NotesFeedQueryVariables>;
+export const RefreshTokensDocument = gql`
+    mutation RefreshTokens($refreshToken: String!) {
+  refreshTokens(refreshToken: $refreshToken) {
+    accessToken
+    refreshToken
+  }
+}
+    `;
+export type RefreshTokensMutationFn = Apollo.MutationFunction<RefreshTokensMutation, RefreshTokensMutationVariables>;
+
+/**
+ * __useRefreshTokensMutation__
+ *
+ * To run a mutation, you first call `useRefreshTokensMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRefreshTokensMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [refreshTokensMutation, { data, loading, error }] = useRefreshTokensMutation({
+ *   variables: {
+ *      refreshToken: // value for 'refreshToken'
+ *   },
+ * });
+ */
+export function useRefreshTokensMutation(baseOptions?: Apollo.MutationHookOptions<RefreshTokensMutation, RefreshTokensMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument, options);
+      }
+export type RefreshTokensMutationHookResult = ReturnType<typeof useRefreshTokensMutation>;
+export type RefreshTokensMutationResult = Apollo.MutationResult<RefreshTokensMutation>;
+export type RefreshTokensMutationOptions = Apollo.BaseMutationOptions<RefreshTokensMutation, RefreshTokensMutationVariables>;
+export const RegisterDocument = gql`
+    mutation Register($username: String!, $password: String!, $email: String!) {
+  register(username: $username, password: $password, email: $email) {
+    accessToken
+    refreshToken
+  }
+}
+    `;
+export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
+
+/**
+ * __useRegisterMutation__
+ *
+ * To run a mutation, you first call `useRegisterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerMutation, { data, loading, error }] = useRegisterMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *      password: // value for 'password'
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<RegisterMutation, RegisterMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, options);
+      }
+export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
+export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
+export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const UserInfoDocument = gql`
+    query UserInfo {
+  me {
+    id
+    username
+    avatar
+  }
+}
+    `;
+
+/**
+ * __useUserInfoQuery__
+ *
+ * To run a query within a React component, call `useUserInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserInfoQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserInfoQuery(baseOptions?: Apollo.QueryHookOptions<UserInfoQuery, UserInfoQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserInfoQuery, UserInfoQueryVariables>(UserInfoDocument, options);
+      }
+export function useUserInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserInfoQuery, UserInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserInfoQuery, UserInfoQueryVariables>(UserInfoDocument, options);
+        }
+export function useUserInfoSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<UserInfoQuery, UserInfoQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<UserInfoQuery, UserInfoQueryVariables>(UserInfoDocument, options);
+        }
+export type UserInfoQueryHookResult = ReturnType<typeof useUserInfoQuery>;
+export type UserInfoLazyQueryHookResult = ReturnType<typeof useUserInfoLazyQuery>;
+export type UserInfoSuspenseQueryHookResult = ReturnType<typeof useUserInfoSuspenseQuery>;
+export type UserInfoQueryResult = Apollo.QueryResult<UserInfoQuery, UserInfoQueryVariables>;

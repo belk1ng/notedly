@@ -3,7 +3,7 @@ import {
   StyledNotesNavigationBar,
   StyledNotesNavigationContainer,
 } from "./styled";
-import { NavigationNoteFragment } from "@/__generated__/types";
+import { NavigationNoteFragment } from "@/apollo/generated/types";
 
 export interface NotesNavigationProps {
   notes: NavigationNoteFragment[];

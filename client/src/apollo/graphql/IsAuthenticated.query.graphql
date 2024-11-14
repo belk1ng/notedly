@@ -1,0 +1,4 @@
+query IsAuthenticated {
+    isAuthenticated @client
+    isInitialized @client
+}

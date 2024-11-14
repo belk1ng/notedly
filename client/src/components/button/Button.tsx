@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from "react";
+import type { ButtonHTMLAttributes } from "react";
 import { Typography } from "@/components";
 import { StyledButton } from "./styled";
 
@@ -9,7 +9,7 @@ export interface StyledButtonProps {
   $fullWidth?: boolean;
 }
 
-export interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   fullWidth?: boolean;
 }

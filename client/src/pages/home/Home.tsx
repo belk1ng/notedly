@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useDocumentTitle } from "@/hooks";
 import { NotesNavigation, QueryResult, Typography } from "@/components";
-import { useNotesFeedQuery } from "@/__generated__/types";
+import { useNotesFeedQuery } from "@/apollo/generated/types";
 import { StyledHomeContainer } from "./styled";
 
 const Home = () => {

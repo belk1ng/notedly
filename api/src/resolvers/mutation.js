@@ -93,7 +93,7 @@ export const Mutation = {
 
     await Promise.all([
       TokenService.revokeRefreshToken(refreshToken),
-      TokenService.saveRefreshToken(refreshToken, user.id),
+      TokenService.saveRefreshToken(newRefreshToken, user.id),
     ]);
 
     return {

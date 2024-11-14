@@ -1,16 +1,16 @@
 import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
-  schema: import.meta.env.VITE_API_URI,
+  schema: [import.meta.env.VITE_API_URI, "./src/schema.graphql"],
   documents: ["src/**/*.{gql,graphql,tsx,ts}"],
   generates: {
-    "./src/__generated__/": {
+    "./src/apollo/generated/": {
       preset: "client",
       presetConfig: {
         gqlTagName: "gql",
       },
     },
-    "./src/__generated__/types.ts": {
+    "./src/apollo/generated/types.ts": {
       plugins: [
         "typescript",
         "typescript-operations",

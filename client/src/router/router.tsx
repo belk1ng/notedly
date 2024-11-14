@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { MainLayout } from "@/layouts";
+import { ProtectedRoute, PublicRoute } from "@/router/components";
 
 function load<ExportValue extends { default: ComponentType | null }>(
   loader: () => Promise<ExportValue>,
@@ -14,7 +15,11 @@ function load<ExportValue extends { default: ComponentType | null }>(
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />,
+    element: (
+      <ProtectedRoute>
+        <MainLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         element: <Navigate to={"/home"} replace />,
@@ -35,6 +40,24 @@ export const router = createBrowserRouter([
       {
         path: "/favorites",
         lazy: load(() => import("@/pages/favorites")),
+      },
+    ],
+  },
+  {
+    path: "/auth/",
+    element: <PublicRoute />,
+    children: [
+      {
+        element: <Navigate to={"/auth/login"} replace />,
+        index: true,
+      },
+      {
+        path: "login",
+        lazy: load(() => import("@/pages/login")),
+      },
+      {
+        path: "register",
+        lazy: load(() => import("@/pages/register")),
       },
     ],
   },
