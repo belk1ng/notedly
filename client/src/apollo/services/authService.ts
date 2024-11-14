@@ -27,7 +27,7 @@ class AuthenticationService {
    * Reactive variable to track the authentication state.
    * @private
    */
-  public readonly isAuthenticatedVar = makeVar(false);
+  private readonly isAuthenticatedVar = makeVar(false);
 
   /**
    * Getter to check if the app is initialized.

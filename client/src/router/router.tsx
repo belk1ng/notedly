@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { MainLayout } from "@/layouts";
 import { ProtectedRoute, PublicRoute } from "@/router/components";
+import { paths } from "@/router/paths";
 
 function load<ExportValue extends { default: ComponentType | null }>(
   loader: () => Promise<ExportValue>,
@@ -14,7 +15,7 @@ function load<ExportValue extends { default: ComponentType | null }>(
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: paths.root,
     element: (
       <ProtectedRoute>
         <MainLayout />
@@ -22,41 +23,41 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
-        element: <Navigate to={"/home"} replace />,
+        element: <Navigate to={paths.home.root} replace />,
         index: true,
       },
       {
-        path: "/home",
+        path: paths.home.root,
         lazy: load(() => import("@/pages/home")),
       },
       {
-        path: "/home/:noteId",
+        path: paths.home.detail.path,
         lazy: load(() => import("@/pages/home")),
       },
       {
-        path: "/notes",
+        path: paths.notes,
         lazy: load(() => import("@/pages/notes")),
       },
       {
-        path: "/favorites",
+        path: paths.favorites,
         lazy: load(() => import("@/pages/favorites")),
       },
     ],
   },
   {
-    path: "/auth/",
+    path: paths.auth.root,
     element: <PublicRoute />,
     children: [
       {
-        element: <Navigate to={"/auth/login"} replace />,
+        element: <Navigate to={paths.auth.login} replace />,
         index: true,
       },
       {
-        path: "login",
+        path: paths.auth.login,
         lazy: load(() => import("@/pages/login")),
       },
       {
-        path: "register",
+        path: paths.auth.register,
         lazy: load(() => import("@/pages/register")),
       },
     ],

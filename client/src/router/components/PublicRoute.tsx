@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { Typography } from "@/components";
-import { useAuth } from "@/router/useAuth";
+import { useAuth } from "@/hooks";
 
 export const PublicRoute = () => {
   const { isLoading, isAuthenticated, hasError } = useAuth();
