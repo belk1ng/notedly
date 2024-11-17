@@ -8,10 +8,6 @@ export type TypographyVariant =
   | "body-large"
   | "body-small";
 
-export interface StyledProps {
-  $variant: TypographyVariant;
-}
-
 export type TypographyPolymorphic =
   | "h1"
   | "h2"
@@ -35,6 +31,11 @@ export type TypographyProps<As extends TypographyPolymorphic> = {
   component?: As;
   variant?: TypographyVariant;
 } & ComponentPropsWithoutRef<As>;
+
+export type StyledProps<As extends TypographyPolymorphic> = BuckPick<
+  TypographyProps<As>,
+  "variant"
+>;
 
 export const Typography = <As extends TypographyPolymorphic>({
   component,

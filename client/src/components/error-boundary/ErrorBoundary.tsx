@@ -8,7 +8,7 @@ export interface ErrorBoundaryProps {
 }
 
 interface State {
-  error: Error | null;
+  error: Nullable<Error>;
 }
 
 export class ErrorBoundary extends Component<

@@ -4,9 +4,9 @@ import { MainLayout } from "@/layouts";
 import { ProtectedRoute, PublicRoute } from "@/router/components";
 import { paths } from "@/router/paths";
 
-function load<ExportValue extends { default: ComponentType | null }>(
+function load<ExportValue extends { default: Nullable<ComponentType> }>(
   loader: () => Promise<ExportValue>,
-): () => Promise<{ Component: ComponentType | null }> {
+): () => Promise<{ Component: Nullable<ComponentType> }> {
   return async () => {
     const { default: Component } = await loader();
     return { Component };

@@ -10,6 +10,7 @@ export const ProtectedRoute = (props: PropsWithChildren) => {
     return <Typography variant={"heading-1"}>Check auth...</Typography>;
   }
 
+  // TODO: Add isInitialized flag to the condition
   if (hasError || !isAuthenticated) {
     return <Navigate replace to={"/auth"} />;
   }

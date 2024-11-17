@@ -6,7 +6,7 @@ import {
   StyledInputWrapper,
 } from "./styled";
 
-export interface Props
+export interface InputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> {
   label: string;
   onChange?: (event: ChangeEvent<HTMLInputElement>, value: string) => void;
@@ -23,7 +23,7 @@ export const Input = ({
   errorMessage,
   required,
   ...props
-}: Props) => {
+}: InputProps) => {
   const id = useId();
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {

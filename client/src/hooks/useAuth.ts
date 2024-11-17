@@ -32,8 +32,9 @@ export const useAuth = () => {
   }
 
   return {
-    isLoading: userInfoLoading,
+    isInitialized,
     isAuthenticated,
     hasError: !!userInfoError,
+    isLoading: userInfoLoading,
   };
 };

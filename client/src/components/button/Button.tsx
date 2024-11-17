@@ -5,15 +5,12 @@ import { Ripple } from "../ripple";
 
 export type ButtonVariant = "filled" | "outlined";
 
-export interface StyledButtonProps {
-  $variant: ButtonVariant;
-  $fullWidth?: boolean;
-}
-
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   fullWidth?: boolean;
 }
+
+export type StyledButtonProps = BuckPick<ButtonProps, "variant" | "fullWidth">;
 
 export const Button = ({
   variant = "filled",
