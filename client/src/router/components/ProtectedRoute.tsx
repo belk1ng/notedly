@@ -4,13 +4,12 @@ import { Typography } from "@/components";
 import { useAuth } from "@/hooks";
 
 export const ProtectedRoute = (props: PropsWithChildren) => {
-  const { isLoading, isAuthenticated, hasError } = useAuth();
+  const { isInitialized, isAuthenticated, hasError } = useAuth();
 
-  if (isLoading) {
+  if (!isInitialized) {
     return <Typography variant={"heading-1"}>Check auth...</Typography>;
   }
 
-  // TODO: Add isInitialized flag to the condition
   if (hasError || !isAuthenticated) {
     return <Navigate replace to={"/auth"} />;
   }

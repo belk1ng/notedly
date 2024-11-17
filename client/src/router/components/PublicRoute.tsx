@@ -3,9 +3,9 @@ import { Typography } from "@/components";
 import { useAuth } from "@/hooks";
 
 export const PublicRoute = () => {
-  const { isLoading, isAuthenticated, hasError } = useAuth();
+  const { isInitialized, isAuthenticated, hasError } = useAuth();
 
-  if (isLoading) {
+  if (!isInitialized) {
     return <Typography variant={"heading-1"}>Check auth...</Typography>;
   }
 

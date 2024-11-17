@@ -7,23 +7,20 @@ export const useAuth = () => {
 
   const isAuthenticated = useReactiveVar(AuthService.isAuthenticated);
 
-  const [
-    getUserInfo,
-    { loading: userInfoLoading, called: userInfoCalled, error: userInfoError },
-  ] = useUserInfoLazyQuery({
-    fetchPolicy: "network-only",
-    onCompleted(data) {
-      AuthService.setInitialized();
-
-      if (data) {
-        AuthService.setAuthenticated(true);
-      }
-    },
-    onError() {
-      AuthService.setInitialized();
-      AuthService.setAuthenticated(false);
-    },
-  });
+  const [getUserInfo, { called: userInfoCalled, error: userInfoError }] =
+    useUserInfoLazyQuery({
+      fetchPolicy: "network-only",
+      onCompleted(data) {
+        AuthService.setInitialized();
+        if (data) {
+          AuthService.setAuthenticated(true);
+        }
+      },
+      onError() {
+        AuthService.setInitialized();
+        AuthService.setAuthenticated(false);
+      },
+    });
 
   const isAppInInitialState = !userInfoCalled && !isInitialized;
 
@@ -35,6 +32,5 @@ export const useAuth = () => {
     isInitialized,
     isAuthenticated,
     hasError: !!userInfoError,
-    isLoading: userInfoLoading,
   };
 };
