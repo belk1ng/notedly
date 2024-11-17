@@ -18,11 +18,17 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button = ({
   variant = "filled",
   fullWidth = false,
+  type = "button",
   children,
   ...props
 }: ButtonProps) => {
   return (
-    <StyledButton $fullWidth={fullWidth} $variant={variant} {...props}>
+    <StyledButton
+      $fullWidth={fullWidth}
+      $variant={variant}
+      type={type}
+      {...props}
+    >
       <Typography variant="body-small">{children}</Typography>
       <Ripple />
     </StyledButton>

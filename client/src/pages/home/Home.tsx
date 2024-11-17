@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useDocumentTitle } from "@/hooks";
-import { Button, NotesNavigation, QueryResult, Typography } from "@/components";
+import { NotesNavigation, QueryResult, Typography } from "@/components";
 import { useNotesFeedQuery } from "@/apollo/generated/types";
 import { StyledHomeContainer } from "./styled";
 

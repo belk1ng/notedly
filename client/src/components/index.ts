@@ -3,6 +3,7 @@ export { Container } from "./ui/Container";
 export { Typography } from "./typography";
 export { Link } from "./link";
 export { Button } from "./button";
+export { Input } from "./input";
 export { NotesNavigation } from "./notes-navigation";
 export { NoteLink } from "./note-link";
 export { QueryResult } from "./query-result";

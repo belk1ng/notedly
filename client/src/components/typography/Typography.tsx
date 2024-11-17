@@ -27,7 +27,9 @@ export type TypographyPolymorphic =
   | "q"
   | "code"
   | "pre"
-  | "time";
+  | "time"
+  | "sub"
+  | "sup";
 
 export type TypographyProps<As extends TypographyPolymorphic> = {
   component?: As;
